@@ -15,7 +15,7 @@ namespace VaultServer
         public static async Task Main()
         {
 
-        
+        menu.MainMenu();
         
             try
             { 
@@ -68,7 +68,7 @@ namespace VaultServer
             {
                 Console.WriteLine("Waiting for a connection... " + chars[i]);
                 i = (i + 1) % chars.Length;
-                await Task.Delay(500);
+                await Task.Delay(200);
                 Console.Clear();
             }
 

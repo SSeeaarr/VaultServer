@@ -15,12 +15,17 @@ namespace VaultServer
 
             try
             {
-                using (NetworkStream ns = stream.GetStream())
+                NetworkStream ns = stream.GetStream();
                 {
-
+                    byte[] sigma = new byte[4096];
                     
+                    NetworkStream namestream = stream.GetStream();
+                     var name = namestream.Read(sigma, 0, sigma.Length);
+                     Console.WriteLine("name is: " + name);
+                    
+                        
 
-                    string filename = "ohio.jpg";
+                        string filename = "ohio.jpg";
 
                     using (FileStream fs = new FileStream(path + filename, FileMode.Create))
                     {

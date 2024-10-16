@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="Core.cs" />
     <Compile Include="Handlefiles.cs" />
+    <Compile Include="menu.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
