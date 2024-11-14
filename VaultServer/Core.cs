@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -15,25 +16,31 @@ namespace VaultServer
         public static async Task Main()
         {
 
-        menu.MainMenu();
+
+            // Initialization Tasks
+            (string initializeip, int initializeport) = readdata.read(); //read from json file
+            int port = initializeport; //assign to vars
+            IPAddress ip = IPAddress.Parse(initializeip);
+            //
         
+            menu.MainMenu(); //enter main menu
+
+
             try
             { 
-                int port = 4999;
-                var ip = IPAddress.Parse("10.0.0.6");
+
                 bool isconnected = false;
                 var cancellationTokenSource = new CancellationTokenSource();
-
 
                 TcpListener server = new TcpListener(ip, port);
                 server.Start();
 
                 string saveDir = @"C:\ServerFiles\";
 
-                if (!Directory.Exists(saveDir))
-                {
+               if (!Directory.Exists(saveDir))
+               {
                     Directory.CreateDirectory(saveDir);
-                }
+               }
 
                 var connectionstatus = Connectionstatus(cancellationTokenSource.Token, () => isconnected);
 
@@ -47,13 +54,14 @@ namespace VaultServer
                         cancellationTokenSource.Cancel();
                         Console.Clear();
                         Console.WriteLine("Connected to client!");
-                        await Handlefiles.Recieve(saveDir, stream);
+                        await Handlefiles.Receive(saveDir, stream);
                     }
+
                 }
 
 
             }
-            catch (SocketException e)
+            catch (Exception e)
             {
                 Console.WriteLine("Something went wrong: {e.Message} ");
             }
@@ -61,18 +69,21 @@ namespace VaultServer
 
         private static async Task Connectionstatus(CancellationToken cancellationToken, Func<bool> isconnected)
         {
-            char[] chars = { '/', '-', '|' };
+            char[] chars = { '/', '-', '\\' ,'|' };
             int i = 0;
+            Console.Clear();
 
             while (!isconnected() && !cancellationToken.IsCancellationRequested)
             {
-                Console.WriteLine("Waiting for a connection... " + chars[i]);
+                Console.Write("\rWaiting for a connection... " + chars[i]);
                 i = (i + 1) % chars.Length;
                 await Task.Delay(200);
-                Console.Clear();
+                
             }
 
         }
+
+
 
 
     }
