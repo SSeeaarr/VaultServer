@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VaultServer
 {
@@ -102,7 +97,7 @@ namespace VaultServer
             if ((ip != null && verifyip))
             {
                     (string unchangedip, int existingport) = readdata.read(); //grab port and pass through to write function since -
-                    writedata.Write(ip, existingport); // - we dont want to overwrite existing port. Vice versa for portchange func.
+                    writedata.Write(ip, existingport); // - we dont want to overwrite existing port. Vice versa for portchange.
                     Console.Write("IP: " + ip + "Successfuly changed");
             }
             else

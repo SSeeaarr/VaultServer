@@ -16,21 +16,24 @@ namespace VaultServer
         public static async Task Main()
         {
 
-
             // Initialization Tasks
             (string initializeip, int initializeport) = readdata.read(); //read from json file
             int port = initializeport; //assign to vars
             IPAddress ip = IPAddress.Parse(initializeip);
             //
-        
+             
+            
             menu.MainMenu(); //enter main menu
-
+            
 
             try
-            { 
+            {
+
+
 
                 bool isconnected = false;
                 var cancellationTokenSource = new CancellationTokenSource();
+                bool firstconneciton = true;
 
                 TcpListener server = new TcpListener(ip, port);
                 server.Start();
@@ -46,14 +49,19 @@ namespace VaultServer
 
                 while (true)
                 {
+                    
                     TcpClient stream = await server.AcceptTcpClientAsync();
                     isconnected = stream.Connected;
 
                     if (isconnected)
                     {
-                        cancellationTokenSource.Cancel();
-                        Console.Clear();
-                        Console.WriteLine("Connected to client!");
+                        if (firstconneciton)
+                        {
+                            cancellationTokenSource.Cancel();
+                            Console.Clear();
+                            Console.WriteLine("Connected to client!");
+                        }
+                        firstconneciton = false;
                         await Handlefiles.Receive(saveDir, stream);
                     }
 
@@ -63,7 +71,8 @@ namespace VaultServer
             }
             catch (Exception e)
             {
-                Console.WriteLine("Something went wrong: {e.Message} ");
+                Console.WriteLine($"Something went wrong: {e.Message} ");
+                System.Diagnostics.Debug.WriteLine($"Something went wrong: {e.Message} ");
             }
         }
 
