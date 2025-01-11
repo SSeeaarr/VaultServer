@@ -50,10 +50,22 @@ namespace VaultServer
         {
             while (true)
             {
+                string autostartstatus;
+                (string unchangedip, int existingport, bool autostart) = readdata.read();
+                if (autostart == true)
+                {
+                    autostartstatus = "[Enabled]";
+                }
+                else
+                {
+                    autostartstatus = "[Disabled]";
+                }
+
                 Console.Clear();
                 Console.WriteLine("\n1. Change IP");
                 Console.WriteLine("\n2. Change Port");
-                Console.WriteLine("\n3. Back");
+                Console.WriteLine("\n3. Toggle Autorun on startup " + autostartstatus);
+                Console.WriteLine("\n4. Back");
                 Console.WriteLine("\n0. Display Current IP and Port");
 
 
@@ -73,7 +85,11 @@ namespace VaultServer
                     {
                         PortChange();
                     }
-                    else if (parseoption == 3) //return to main menu
+                    else if (parseoption == 3)
+                    {
+                        AutoStartChange();
+                    }
+                    else if (parseoption == 4) //return to main menu
                     {
                         break;
                     }
@@ -96,8 +112,8 @@ namespace VaultServer
             bool verifyip = IPAddress.TryParse(ip, out _);
             if ((ip != null && verifyip))
             {
-                    (string unchangedip, int existingport) = readdata.read(); //grab port and pass through to write function since -
-                    writedata.Write(ip, existingport); // - we dont want to overwrite existing port. Vice versa for portchange.
+                    (string unchangedip, int existingport, bool autostart) = readdata.read(); //grab port and pass through to write function since -
+                    writedata.Write(ip, existingport, autostart); // - we dont want to overwrite existing port. Vice versa for portchange.
                     Console.Write("IP: " + ip + "Successfuly changed");
             }
             else
@@ -118,15 +134,37 @@ namespace VaultServer
             if (port != null && verifyint)
             {
                 var input = int.Parse(port);
-                (string existingip, int unchangedport) = readdata.read(); //grab ip and pass through to write function
-                writedata.Write(existingip, input);
+                (string existingip, int unchangedport, bool autostart) = readdata.read(); //grab ip and pass through to write function
+                writedata.Write(existingip, input, autostart);
                 Console.Write("Port: " + port + "Successfuly changed");
             }
         }
 
+        private static void AutoStartChange()
+        {
+            Console.Clear();
+
+            (string unchangedip, int existingport, bool autostart) = readdata.read();
+
+            if (autostart == false) 
+            {
+                autostart = true;
+            }
+            else 
+            { 
+                autostart = false;
+            }
+
+            writedata.Write(unchangedip, existingport, autostart);
+
+
+
+        }
+
         private static void DisplayInfo() {
             Console.Clear();
-            (string initializeip, int initializeport) = readdata.read();
+            (string initializeip, int initializeport, bool autostart) = readdata.read();
+            Console.WriteLine($"{initializeip} {initializeport} {autostart}");
             Console.WriteLine("\nPress enter to continue.");
             Console.ReadLine();
         }

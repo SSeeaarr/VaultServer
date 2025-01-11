@@ -9,19 +9,21 @@ namespace VaultServer
     {
         public string IP { get; set; }
         public int Port { get; set; }
+        public bool AutoStart { get; set; }
 
     }
 
 
     public class writedata
     {
-        public static void Write(string ip = "0.0.0.0", int port = 0000)
+        public static void Write(string ip = "0.0.0.0", int port = 0000, bool autostart = false)
         {
 
             var user = new Userdata
             {
                 IP = ip,
-                Port = port
+                Port = port,
+                AutoStart = autostart
             };
             
 
@@ -43,7 +45,7 @@ namespace VaultServer
 
     public class readdata
     {
-        public static (string ip, int port) read()
+        public static (string ip, int port, bool autostart) read()
         {
             
             string data;
@@ -60,10 +62,9 @@ namespace VaultServer
                 }
 
                 var user = JsonSerializer.Deserialize<Userdata>(data);
-                Console.WriteLine($"IP: {user.IP}, Port: {user.Port}");
 
 
-                return (user.IP, user.Port);
+                return (user.IP, user.Port, user.AutoStart);
             }
             else {
                 Console.WriteLine("File does not exist! Creating new save.");
@@ -75,7 +76,7 @@ namespace VaultServer
 
                 string jdata = File.ReadAllText(filePath);
                 var user = JsonSerializer.Deserialize<Userdata>(jdata);
-                return (user.IP, user.Port);
+                return (user.IP, user.Port, user.AutoStart);
             }
 
         }

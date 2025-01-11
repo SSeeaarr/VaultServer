@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -17,19 +18,27 @@ namespace VaultServer
         {
 
             // Initialization Tasks
-            (string initializeip, int initializeport) = readdata.read(); //read from json file
+            (string initializeip, int initializeport, bool autostart) = readdata.read(); //read from json file
             int port = initializeport; //assign to vars
             IPAddress ip = IPAddress.Parse(initializeip);
             //
-             
+
+            if (autostart == false)
+            {
+                menu.MainMenu(); //enter main menu
+            }
+            else if (autostart == true)
+            {
+                
+                await AutoruncountWarning();
+                
+            }
+
             
-            menu.MainMenu(); //enter main menu
-            
+
 
             try
             {
-
-
 
                 bool isconnected = false;
                 var cancellationTokenSource = new CancellationTokenSource();
@@ -64,7 +73,7 @@ namespace VaultServer
                         firstconneciton = false;
                         await Handlefiles.Receive(saveDir, stream);
                     }
-
+                    
                 }
 
 
@@ -92,7 +101,30 @@ namespace VaultServer
 
         }
 
+        private static async Task AutoruncountWarning()
+        {
+            var seconds = 5;
+            while (seconds > 0)
+            {
+                Thread.Sleep(1000);
+                seconds--;
+                Console.Write("\rAutostart in: " + seconds + " seconds. Press esc to enter main menu.");
+                
+            }
 
+        }
+
+        private static async Task ReadInput(CancellationToken endtask)
+        {
+            var endautostart = new CancellationTokenSource();
+            ConsoleKeyInfo cki = Console.ReadKey();
+            string convert = cki.Key.ToString();
+            System.Diagnostics.Debug.WriteLine(convert);
+            if (convert == "Escape")
+            {
+                
+            }
+        }
 
 
     }
